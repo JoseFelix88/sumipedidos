@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+
+            <ui:define name="top">
+                <h1 align="center" style="font-size: 20px">AFILIADOS</h1>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <p:fieldset legend="Datos del Afiliado" id="panelafiliado">
+                        <h:panelGrid columns="2">
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Tipo de Documento" for="combotipodocu"/>
+
+                                <p:selectOneMenu id="combotipodocu" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.tipodocutmento}"   
+                                                 required="true"  effect="fade" var="combotipodoc" 
+                                                 style="width:260px" filter="true" filterMatchMode="contains" 
+                                                 requiredMessage="Selecciona el tipo de documento" 
+                                                 converter="omnifaces.SelectItemsConverter">
+
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0][1]}" />
+                                    <f:selectItems value="#{ordenBean.listTipodocumento}" var="lista"
+                                                   itemLabel="#{lista[0]}" itemValue="#{lista[1]}}" />
+                                </p:selectOneMenu>
+                                <p:message for="combotipodocu" />
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="ID. Afiliado" for="txtidafiliado" />
+                                <p:inputText id="txtidafiliado" 
+                                             value="#{ordenBean.ordenDTO.afiliado.numeroidentidad}" 
+                                             required="true"/>
+
+                            </h:panelGrid>
+                            <h:panelGrid cellpadding="5" columns="2">
+                                <h:outputLabel value="Apellidos y Nombres" for="txtnomape" />
+                                <p:inputText id="txtnomape" value="#{ordenBean.ordenDTO.nombreApellido}" size="50" />
+
+                                <h:outputLabel value="Telefono Afiliado" for="txtelefono" />
+                                <p:inputText id="txtelefono" value="#{ordenBean.ordenDTO.telefono}" />
+
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./Template.xhtml">
+            <ui:define name="top">
+                <h2 align="center">REGISTRAR ORDEN CTC</h2>
+            </ui:define>
+            <ui:define name="content">
+
+              
+                <h:form id="formindex">
+                    <p:growl autoUpdate="false" id="msj"  showDetail="true" /> 
+
+                    <p:fieldset legend="Datos Orden CTC" id="panelorden">
+                        <h:panelGrid columns="3" >
+                            <h:outputLabel value="No. de Orden" for="txtnumorden" />
+                            <p:inputText id="txtnumorden" value="#{ordenBean.ordenDTO.numOrden}" 
+                                         required="true" requiredMessage="Ingrese el No. de la Orden" />
+                            <p:commandButton  process="@this, txtnumorden" title="Verficar Orden" 
+                                              icon="ui-icon-check" update="pnldataorden,panelafiliado,paneldetalle"
+                                              actionListener="#{ordenBean.verificarOrden}" />
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="3" id="pnldataorden">
+                            <h:outputLabel value="Fecha de la Orden" for="jdOrden"/>
+                            <p:calendar id="jdOrden"  mode="popup" required="true" value="#{ordenBean.ordenDTO.fechaOrden}"
+                                        requiredMessage="Selecciona la fecha de la orden." 
+                                        effect="fold" navigator="true"  
+                                        pattern="dd-MM-yyyy" mask="true" placeholder="dia-mes-año"  />
+                            <p:message for="jdOrden" />
+
+                            <h:outputLabel value="Fecha de la Formula Medica" for="jdformula"/>
+                            <p:calendar id="jdformula"  mode="popup" required="true"  value="#{ordenBean.ordenDTO.fechaFormula}"
+                                        requiredMessage="Selecciona la fecha de la Formula Medica." 
+                                        effect="fold" navigator="true" 
+                                        pattern="dd-MM-yyyy" mask="true" placeholder="dia-mes-año"  />
+                            <p:message for="jdformula" />
+
+                            <h:outputLabel value="Punto de Entrega" for="combopuntoentrega"/>
+                            <p:selectOneMenu id="combopuntoentrega" value="#{ordenBean.ordenDTO.puntoEntrega}"   required="true"
+                                             effect="fade" var="combopunto" style="width:260px" filter="true" filterMatchMode="contains" 
+                                             requiredMessage="Selecciona el Punto de Entrega." >
+
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0]}" />
+                                <f:selectItems value="#{ordenBean.listarPunto}" var="lista"
+                                               itemLabel="#{lista[0]}" itemValue="#{lista[0]}}" />
+
+                            </p:selectOneMenu>
+                            <p:message for="combopuntoentrega" />
+                        </h:panelGrid>
+
+                        <p:fieldset legend="Datos del Afiliado" id="panelafiliado" toggleable="true">
+                            <h:panelGrid columns="2">
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Tipo de Documento" for="combotipodocu"/>
+
+                                    <p:selectOneMenu id="combotipodocu" value="#{ordenBean.ordenDTO.afiliado.tipodocutmento}"   required="true"
+                                                     effect="fade" var="combotipodoc" style="width:260px" filter="true" filterMatchMode="contains" 
+                                                     requiredMessage="Selecciona el tipo de documento" >
+
+                                        <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0][1]}" />
+                                        <f:selectItems value="#{ordenBean.listTipodocumento}" var="lista"
+                                                       itemLabel="#{lista[0]}" itemValue="#{lista[1]}}" />
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="4">
+                                    <h:outputLabel value="ID. Afiliado" for="txtidafiliado" />
+                                    <p:inputText id="txtidafiliado" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.numeroidentidad}" 
+                                                 required="true" requiredMessage="Ingresa el Id. del afiliado"/>
+
+                                    <p:commandButton process="@this, txtidafiliado,combotipodocu" icon="ui-icon-search"   
+                                                     actionListener="#{ordenBean.consultaafiliado}"
+                                                     update="msj,txtnomape,txtelefono"/>
+
+                                    <p:commandButton title="Añada el Afiliado Si no lo Encuentra" 
+                                                     icon="ui-icon-plus"  process="@this"
+                                                     oncomplete="PF('dlgafiliado').show()" update="afiliadoform"  />
+
+                                </h:panelGrid>
+                                <h:panelGrid cellpadding="5" columns="2">
+                                    <h:outputLabel value="Apellidos y Nombres" for="txtnomape" />
+                                    <p:inputText id="txtnomape" value="#{ordenBean.ordenDTO.nombreApellido}" size="50" />
+
+                                    <h:outputLabel value="Telefono Afiliado" for="txtelefono" />
+                                    <p:inputText id="txtelefono" value="#{ordenBean.ordenDTO.afiliado.telefono}" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </p:fieldset>
+                    <p:fieldset legend="Detalle de la Orden" id="paneldetalle">
+
+                        <h:panelGrid columns="3" style="margin-bottom: 5px; margin-left: 30px">
+                            <h:outputLabel value="Codigo CUPS" for="txtcodcum"/>
+                            <h:outputLabel value="Descripción" for="comboproducto" />
+                            <h:outputLabel value="Cantidad" for="txtcantidad"/>
+
+                            <p:inputText id="txtcodcum" value="#{ordenBean.ordenDTO.cumProducto}"  size="20" />
+
+                            <p:selectOneMenu id="comboproducto" value="#{ordenBean.ordenDTO.producto}"   
+                                             effect="fade" var="comboproducto" style="width:360px" filter="true" filterMatchMode="contains" >
+
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{ordenBean.ordenDTO.producto}" />
+                                <f:selectItems value="#{ordenBean.listarprodcuto}" var="listaprod"
+                                               itemLabel="#{listaprod[0]}" itemValue="#{listaprod[0]}}" />
+                            </p:selectOneMenu>
+                            <p:inputText id="txtcantidad" value="#{ordenBean.ordenDTO.cantidad}" size="5" style="text-align: right"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="4" style="margin-left: 130px">
+                            <p:commandButton  id="btnsave" value="Guardar" actionListener="#{ordenBean.registrarOrden(actionEvent)}" update="msj" >
+                                <p:confirm header="Confirma"  message="Estas Seguro que Deseas Registrar la Orden?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton process="@this" id="btnuevo" value="Nuevo" actionListener="#{ordenBean.nuevaOrden(actionEvent)}"
+                                             update="panelorden,paneldetalle,afiliadoform" />
+                            <p:commandButton process="@this"  id="btnanula" value="Anular" oncomplete="PF('dlganular').show()" />
+                            <p:commandButton  process="@this, txtnumorden"  id="btnentregar" value="Entregar" actionListener="#{ordenBean.entregar}"
+                                              update="panelorden,paneldetalle,msj,afiliadoform" />
+                        </h:panelGrid>
+                        <p:confirmDialog  global="true" showEffect="fade" hideEffect="explode">
+                            <p:commandButton   value="Si" type="button"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check"  />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                    </p:fieldset>
+                </h:form>
+
+                <p:dialog header="Anular CTC" widgetVar="dlganular" id="find" 
+                          resizable="false" height="100" width="250"  modal="true">
+                    <h:form id="frmanular">
+                        <p:growl autoUpdate="false" id="msjdl" showDetail="true" />
+                        <h:panelGrid columns="2">
+                            <h:outputLabel  value="Ingresa el No. de la Orden"/>
+                            <h:outputLabel />
+                            <p:inputText id="txtfind" value="#{ordenBean.ordenDTO.numOrden}" />
+                            <h:outputLabel />
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Aceptar"  actionListener="#{ordenBean.anularOrden(actionEvent)}" 
+                                             oncomplete="PF('dlganular').hide()" update="msjdl">
+                                <p:confirm header="Confirma" message="Estas Seguro que Deseas ANULAR la Orden?" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('dlganular').hide()"/>
+                        </h:panelGrid>
+
+                        <p:confirmDialog  global="true" showEffect="fade" hideEffect="explode">
+                            <p:commandButton   value="Si" type="button"  styleClass="ui-confirmdialog-yes" icon="ui-icon-check"  />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="GESTIONAR AFILIADO" widgetVar="dlgafiliado" id="afiliadoform" 
+                          resizable="false" height="400" width="550"  modal="true">
+                    <h:form id="frmafiliado">
+                        <p:growl id="mjafil" showDetail="true" autoUpdate="true" />
+                        <p:fieldset legend="Datos del Afiliado">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Tipo de Documento" for="combotipodoc"/>
+                                <h:outputLabel value="ID. Afiliado" for="txtidafiliado" />
+                                <p:selectOneMenu id="combotipodoc" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.tipodocutmento}"   
+                                                 required="true"  effect="fade" var="combotipodoc" 
+                                                 style="width:260px" filter="true" filterMatchMode="contains" 
+                                                 requiredMessage="Selecciona el tipo de documento">
+
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0][1]}" />
+                                    <f:selectItems value="#{ordenBean.listTipodocumento}" var="lista"
+                                                   itemLabel="#{lista[0]}" itemValue="#{lista[1]}}" />
+                                </p:selectOneMenu>
+
+                                <p:inputText id="txtidafiliado" 
+                                             value="#{ordenBean.ordenDTO.afiliado.numeroidentidad}" 
+                                             required="true"/>
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="1" style="margin-left: 40px">
+                                <h:panelGrid cellpadding="5" columns="2">
+                                    <h:outputLabel value="Primer Apellido" for="txtape1" />
+                                    <h:outputLabel value="Segundo Apellido" for="txtape2" />
+
+
+                                    <p:inputText id="txtape1" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.primer_apellido}" />
+
+                                    <p:inputText id="txtape2" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.seg_apellido}"  />
+
+                                </h:panelGrid>
+                                <h:panelGrid columns="2">
+                                    <h:outputLabel value="Primer Nombre" for="txtnom1" />
+                                    <h:outputLabel value="Segundo Nombre" for="txtnom2" />
+                                    <p:inputText id="txtnom1" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.primer_nombre}"  />
+
+                                    <p:inputText id="txtnom2" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.seg_nombre}" />
+                                    <h:outputLabel value="Telefono" for="txttel" />
+                                    <h:outputLabel value="Fecha de Nacimiento" for="fechanace" />
+                                    <p:inputText id="txttel" 
+                                                 value="#{ordenBean.ordenDTO.afiliado.telefono}"  />
+                                    <p:calendar id="fechanace"  mode="popup" required="true" 
+                                                value="#{ordenBean.ordenDTO.afiliado.fecha_nacimiento}"
+                                                requiredMessage="Selecciona la fecha de la orden." 
+                                                effect="fold" navigator="true" 
+                                                pattern="dd-MM-yyyy" mask="true" placeholder="dia-mes-año"  />
+
+                                    <h:outputLabel value="Regimen" for="comboregimen" />
+                                    <h:outputLabel value="Sexo" for="combosexo" />
+                                    <p:selectOneMenu id="comboregimen" 
+                                                     value="#{ordenBean.ordenDTO.afiliado.regimen}"   
+                                                     required="true"  effect="fade" var="comboreg" 
+                                                     filter="false" filterMatchMode="contains" 
+                                                     requiredMessage="Selecciona el tipo de documento" >
+
+                                        <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0][0]}" />
+                                        <f:selectItems value="#{ordenBean.listregimen}" var="lista"
+                                                       itemLabel="#{lista[1]}" itemValue="#{lista[0]}}" /> 
+                                    </p:selectOneMenu>
+
+                                    <p:selectOneMenu id="combosexo" 
+                                                     value="#{ordenBean.ordenDTO.afiliado.sexo}"   
+                                                     required="true"  effect="fade">
+
+                                        <f:selectItem itemLabel="Seleccione" />
+                                        <f:selectItems value="#{ordenBean.sexo}"  var="sex"
+                                                       itemLabel="#{sex[0]}" itemValue="#{sex[0]}}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>                                       
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <h:panelGrid columns="2" style="margin-left: 100px; margin-top: 20px">
+
+                            <p:commandButton value="Registrar"  update="mjafil"
+                                             actionListener="#{ordenBean.registrarafiliado(actionEvent)}" 
+                                             oncomplete="PF('dlgafiliado').hide()" />
+
+                            <p:commandButton process="@this" value="Cancelar" oncomplete="PF('dlgafiliado').hide()" />
+                        </h:panelGrid>
+                    </h:form>
+
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

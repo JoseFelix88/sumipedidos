@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+
+        <h:form>
+            <ui:composition template="/Plantilla.xhtml">
+                <ui:define name="top">BIENVENIDO, POR FAVOR INGRESA TUS CREDENCIALES</ui:define>
+                <ui:define name="content">  
+
+                    <h:form>
+                        <p:growl id="growl" autoUpdate="true" showDetail="true" sticky="true" /> 
+
+                        <p:panel header="Login" id="panel">
+                            <h:panelGrid columns="3">
+                                <p:outputLabel value="ID. Usuario" />
+                                <p:inputText value="#{loginBean.loginDTO.idusuario}"  id="txtidusuario" required="true" 
+                                             requiredMessage="Ingresa tú ID de Usuario"/>
+                                <p:message for="txtidusuario" />
+                                <p:outputLabel value="Clave" />
+                                <p:password value="#{loginBean.loginDTO.clave}" id="txtclave" required="true" 
+                                            requiredMessage="Ingresa tú Clave de Acceso"/>
+                                <p:message for="txtclave"/>
+                                <h:outputLabel />
+
+                                <p:commandButton id="btnEntrar" value="Entrar"  action="#{loginBean.LogearUser(event)}" update="panel,growl"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+
+                </ui:define>
+
+            </ui:composition>  
+
+        </h:form>
+        <br />
+        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
+    </h:body>
+</html>

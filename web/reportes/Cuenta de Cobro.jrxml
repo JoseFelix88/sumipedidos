@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cuenta de Cobro" pageWidth="612" pageHeight="792" columnWidth="500" leftMargin="56" rightMargin="56" topMargin="155" bottomMargin="70" scriptletClass="com.josecuriel.sumipedido.util.db.Numero_a_Letra" uuid="64a1c160-9730-4b24-916a-d740852fdf41">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="240"/>
+	<scriptlet name="numero_a_letra" class="com.josecuriel.sumipedido.util.db.Numero_a_Letra"/>
+	<parameter name="fechaEntrega" class="java.util.Date"/>
+	<parameter name="punto" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+departamentos.nombre AS departamentos_nombre,
+clientes.nit AS clientes_nit,
+clientes.nombre AS clientes_nombre,
+empresas.Nombre AS empresas_Nombre,
+empresas.gerente AS empresas_gerente,
+cuentasctc.inicia,
+cuentasctc.finaliza,
+cuentasctc.totalcta,
+ciudades.nombre AS Ciudad,
+puntos.NOMBRE AS puntoentrega,
+empresas.Nit AS NIT_EMPRESA,
+cuentasctc.numcuenta
+FROM
+departamentos ,
+empresas ,
+puntos ,
+clientes ,
+ciudades ,
+cuentasctc
+WHERE
+clientes.estado = 1 AND
+empresas.estado = 1 AND
+puntos.NOMBRE = $P{punto} AND
+puntos.Ciudad = ciudades.cod_ciudad AND
+ciudades.dept = departamentos.cod_dept AND
+puntos.NOMBRE = cuentasctc.puntoentrega]]>
+	</queryString>
+	<field name="departamentos_nombre" class="java.lang.String"/>
+	<field name="clientes_nit" class="java.lang.String"/>
+	<field name="clientes_nombre" class="java.lang.String"/>
+	<field name="empresas_Nombre" class="java.lang.String"/>
+	<field name="empresas_gerente" class="java.lang.String"/>
+	<field name="inicia" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="finaliza" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalcta" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Ciudad" class="java.lang.String"/>
+	<field name="puntoentrega" class="java.lang.String"/>
+	<field name="NIT_EMPRESA" class="java.lang.String"/>
+	<field name="numcuenta" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="330" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="500" height="330" uuid="b5d16d8b-83f9-49b8-aaa6-4eb8f9ca0b0b"/>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement x="76" y="0" width="100" height="14" uuid="fe26b7ed-e14b-43db-a470-2c2f0588ce46"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{fechaEntrega}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="76" height="14" uuid="5c4268f5-6746-4a3c-a3da-ad08e4d3a9d9"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["SINCELEJO,"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="135" y="46" width="237" height="81" uuid="aa1aaf35-a203-4551-bf2e-b4a33c2b1479"/>
+					<textElement textAlignment="Center">
+						<font fontName="Verdana" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{clientes_nombre}+"\nNit: "+$F{clientes_nit}+"\n\n\n\n DEBE A"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="135" y="139" width="237" height="28" uuid="46940ac2-cb71-4dbf-a70e-42bb7fd48b0e"/>
+					<textElement textAlignment="Center">
+						<font fontName="Verdana" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{empresas_Nombre}+"\nNit: "+$F{NIT_EMPRESA}]]></textFieldExpression>
+				</textField>
+				<componentElement>
+					<reportElement x="372" y="14" width="128" height="24" uuid="f7331917-da02-4ed8-bf72-ca34a216851c"/>
+					<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128A" drawText="true" checksumRequired="false">
+						<jr:codeExpression><![CDATA[$F{numcuenta}]]></jr:codeExpression>
+					</jr:barbecue>
+				</componentElement>
+				<textField>
+					<reportElement x="2" y="226" width="498" height="104" uuid="ebe22d7d-cbf1-41e5-aad0-5abae6a9b7f0"/>
+					<textElement textAlignment="Justified">
+						<font fontName="Verdana" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["La Suma de "+$P{REPORT_SCRIPTLET}.Convertir(""+$F{totalcta},true)+" ( $ "+$P{REPORT_SCRIPTLET}.numerico( $F{totalcta} )+") Por Concepto de "+
+"medicamentos de ordenes tipo CTC suministrados a los afiliados de "+$F{clientes_nombre}+" en el municipio de "+$F{Ciudad}+""
++" departamento de "+$F{departamentos_nombre}+" desde la factura de venta No. "+$F{inicia}+" a la "+$F{finaliza}+" durante el periodo 01-12-2015 al 31-12-2015."]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="372" y="0" width="128" height="14" uuid="be88be49-3912-4936-978f-87ff0ffb72ca"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[CUENTA DE COBRO No]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnFooter>
+		<band height="89">
+			<textField>
+				<reportElement x="2" y="0" width="212" height="89" uuid="bc060bad-e3b3-48c6-a23b-1c8da44adf29"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Verdana" isBold="true" isItalic="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Atentamente, \n\n\n\n"+$F{empresas_gerente}+"\nGerente General"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

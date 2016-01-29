@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+
+            <ui:define name="top">
+                <h2 align="center" style="font-size: 20px">GENERAR FACTURAS Y CUENTAS DE COBRO</h2>
+            </ui:define>
+
+            <ui:define name="content">
+                <pm:content>
+                    <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+                        <f:facet name="default">
+                            <h:outputText value="Status: StandBy" />
+                        </f:facet>
+
+                        <f:facet name="start">
+                            <p:outputLabel value="Procesando por favor espere..." />
+                        </f:facet>
+
+                        <f:facet name="complete">
+                            <h:outputText value="Status: Completed" />
+                        </f:facet>
+                    </p:ajaxStatus>
+
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" 
+                              closable="false" resizable="false" showHeader="false">
+                        <p:outputLabel value="Procesando por favor espere..." />
+                    </p:dialog>
+                    <h:form>
+                        <p:growl id="msj" autoUpdate="true" showDetail="true" />
+                        <h:panelGrid columns="2">
+                            <p:fieldset toggleable="false" id="pnlconfigfactura"  legend="CONFIGURAR FACTURACION">
+                                <h:panelGrid id="pndatacta" columns="2">
+                                    <h:outputLabel value="PUNTO DE ENTREGA"/>
+                                    <p:selectOneMenu id="combopuntoentrega" value="#{informesBean.puntoentrega}"   required="true"
+                                                     effect="fade" var="combopunto" style="width:260px" filter="true" filterMatchMode="contains" 
+                                                     requiredMessage="Selecciona el Punto de Entrega."
+                                                     converter="omnifaces.SelectItemsConverter">
+
+                                        <f:selectItem itemLabel="Seleccione" itemValue="#{lista[0]}" />
+                                        <f:selectItems value="#{informesBean.listarPunto}" var="lista"
+                                                       itemLabel="#{lista[0]}" itemValue="#{lista[0]}}" />
+
+                                        <p:ajax update="txtfactura" listener="#{informesBean.ordenesEntregadas}"  />
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Cantidad de Facturas: "/>
+                                    <h:outputLabel id="txtfactura" value="#{informesBean.cantidadFacturas}"/>
+
+                                    <h:outputLabel value="Consecutivo de la Facturacion:" />
+                                    <p:inputText value="#{informesBean.consecutivo}" id="txtconsecutivo" />
+
+                                </h:panelGrid>
+
+
+                            </p:fieldset>
+                            <p:fieldset toggleable="true" id="pnltotales"  legend="TOTALES FACTURACION CTC">
+                                <p:panelGrid columns="2">
+                                    <h:outputLabel value="Total $ Facturado" />
+                                    <p:outputLabel value="#{informesBean.totalvalorFacturasCTC}" style="text-align: right">
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </p:outputLabel>
+                                  
+                                    <h:outputLabel value="Cantidad Total Factura" />
+                                    <p:outputLabel value="#{informesBean.cantidadtotalFacturasCTC}" style="text-align: right">
+                                        <f:convertNumber type="currency" currencySymbol="" maxFractionDigits="0" />
+                                    </p:outputLabel>
+                                </p:panelGrid>
+                            </p:fieldset>
+                        </h:panelGrid>
+                        <p:separator />
+                        <h:panelGrid columns="4" >
+                            <p:commandButton value="Generar Facturas" process="@this,msj,pndatacta" 
+                                             actionListener="#{informesBean.generarCtasCTC}" update="ctaregistrada,pnltotales" />
+                            <h:commandButton class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                             value="Cuenta de Cobro CTC" actionListener="#{informesBean.imprimirCtaCobroCTC}" />
+                            <h:commandButton  class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                              actionListener="#{informesBean.verPDF}" value="Relacion de Ctas de Cobro" />
+                             <h:commandButton  class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                              actionListener="#{informesBean.imprimirFacturaCTC}" value="Imprimir Facturas" />
+                        </h:panelGrid>
+                        <p:fieldset toggleable="true" id="pnlinfofactura"  legend="INFORME DE FACTURACION">
+
+                            <p:dataTable id="ctaregistrada" value="#{informesBean.cuentasRegistradas}" var="cuentasctc" 
+                                         editable="true" editMode="cell" widgetVar="wgctaregistrada"
+                                         scrollable="true" scrollHeight="350"  style="font-family: verdana; font-size: 12px" 
+                                         paginator="true" rows="20" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                         rowsPerPageTemplate="10,20,30,50" emptyMessage="No se Encontraron cuentas..." 
+                                         filteredValue="#{informesBean.filtroctaregistrado}">
+
+                                <p:column headerText="No. de Cuenta">
+                                    <h:outputLabel value="#{cuentasctc[0]}" />
+                                </p:column>
+                                <p:column headerText="Punto de Entrega">
+                                    <h:outputLabel value="#{cuentasctc[1]}"/>
+                                </p:column>
+                                <p:column headerText="Facturas">
+                                    <h:outputLabel value="#{cuentasctc[2]}" />
+                                </p:column>
+                                <p:column headerText="Productos">
+                                    <h:outputLabel value="#{cuentasctc[3]}" />
+                                </p:column>
+                                <p:column headerText="Inicia">
+                                    <h:outputLabel value="#{cuentasctc[4]}" />
+                                </p:column>
+                                <p:column headerText="Finaliza">
+                                    <h:outputLabel value="#{cuentasctc[5]}"/>
+                                </p:column>
+                                <p:column headerText="$ Total Cuenta" width="90">
+                                    <h:outputLabel value="#{cuentasctc[6]}">
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </h:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton title="RIPS" icon="ui-icon-folder-open"/>
+                                    <p:commandButton title="Cuenta de Cobro" icon="ui-icon-open"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </h:form>
+                </pm:content>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

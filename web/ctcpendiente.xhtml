@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+            <ui:define name="top">
+                <h2 align="center" style="font-size: 18px; font-family: verdana"
+                    >CTC PENDIENTES</h2>
+            </ui:define>
+            <ui:define name="content">
+
+
+                <h:form id="form">
+
+                    
+                    <p:commandButton  value="Mostrar Pendientes" 
+                                     actionListener="#{pendienteCTCBean.cargarpendientes}"
+                                     update="tabla"/>
+
+                    <p:growl id="msj" autoUpdate="false" showDetail ="true" />
+                    <p:dataTable  var="pendientes" value="#{pendienteCTCBean.listarpendientes}" widgetVar="datospaciente" id="tabla" 
+                                  scrollable="true" scrollHeight="350"
+                                  paginator="false" rows="20" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                  rowsPerPageTemplate="10,20,30,50" emptyMessage="No se Encontro CTC..." filteredValue="#{pendienteCTCBean.filtrarpendientes}">
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar Por:" />
+                                <p:inputText  id="globalFilter" onkeyup="PF('datospaciente').filter()"
+                                              size="50" placeholder="No. de Orden o Producto"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column filterBy="#{pendientes.numOrden}" filterMatchMode="contains" 
+                                  headerText="No. de Orden" width="100" >
+                            <h:outputText   value="#{pendientes.numOrden} "/>  
+                        </p:column>
+
+                        <p:column  filterBy="#{pendientes.puntoEntrega}" 
+                                      filterMatchMode="contains"
+                            headerText="Punto de Entrega" width="90" >
+                            <h:outputText   value="#{pendientes.puntoEntrega} "/>  
+                        </p:column>
+
+                        <p:column filterBy="#{pendientes.nombreApellido}" filterMatchMode="contains"  headerText="Afiliado" width="150">
+                            <p:outputLabel value="#{pendientes.nombreApellido}"/>
+                        </p:column>
+
+                        <p:column filterBy="#{pendientes.producto}" filterMatchMode="contains" 
+                                  headerText="Producto" width="320"  >
+                            <h:outputText value="#{pendientes.producto} "/>  
+                        </p:column>
+
+                        <p:column headerText="Cantidad"  width="50" style="text-align: right">
+                            <h:outputText value="#{pendientes.cantidad} "/>  
+                        </p:column>
+
+                        <p:column width="60">
+
+                            <p:commandButton value="Entregar" oncomplete="PF('wlgdatos').show();"  
+                                             actionListener="#{pendienteCTCBean.consultarctcpendiente(pendientes.itemorden)}"
+                                             update=":dldatos"/>
+
+                        </p:column>
+                        
+                         <f:facet name="footer">
+                             <h:outputLabel value="NOTA: LAS FECHAS DE INGRESO Y ENTREGA DEPENDEN SOLO DEL REGISTRO DE LA ORDEN CTC EN EL SISTEMA." />
+                             <h:panelGrid columns="2" width="40">
+                                 <h:outputLabel value="CTC PENDIENTES " />
+                                 <h:outputLabel value="CTC ENTREGADOS " />
+                                 <p:outputLabel value="#{pendienteCTCBean.listarpendientes.size()}" />
+                                 <p:outputLabel value="#{entregaCTCBean.listarctcentregado.size()}" />
+                             </h:panelGrid> 
+                        </f:facet>
+                    </p:dataTable>
+                </h:form> 
+                <p:dialog  header="Datos de la Orden Selecionada" widgetVar="wlgdatos" id="dldatos" showEffect="fade"  hideEffect="explode"
+                           width="720" height="300" closable="false" resizable="false"  modal="true">
+                    <h:form>
+
+                        <h:panelGrid columns="2">
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Item Orden "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().itemorden}" style="text-align: right"/>
+
+                                <p:outputLabel value="No. de Orden "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().numOrden}"/>
+
+                                <p:outputLabel value="Fecha Formula "/>
+                                <p:outputLabel value="#{pendienteCTCBean.utilidad.formatearFechaDMY(pendienteCTCBean.getdTO().fechaFormula)}"/>
+
+                                <p:outputLabel value="Fecha de la Orden "/>
+                                <p:outputLabel value="#{pendienteCTCBean.utilidad.formatearFechaDMY(pendienteCTCBean.getdTO().fechaOrden)}"/>
+
+                                <p:outputLabel value="Fecha de Ingreso al Sistema "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().fechaIngreso}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Punto de Entrega "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().puntoEntrega}"/>
+
+                                <p:outputLabel value="No. de Identificacion "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().idAfiliado}"/>
+
+                                <p:outputLabel value="Nombres y Apellidos"/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().nombreApellido}"/>
+
+                                <p:outputLabel value="Telefono "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().telefono}"/>
+                                <p:outputLabel value="REGIMEN "/>
+                                <p:outputLabel value="#{pendienteCTCBean.getdTO().afiliado.regimen}" />                          </p:panelGrid>
+                        </h:panelGrid>
+
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="CUM "/>
+                            <p:outputLabel value="#{pendienteCTCBean.getdTO().cumProducto}"/>
+
+                            <p:outputLabel value="Producto "/>
+                            <p:outputLabel value="#{pendienteCTCBean.getdTO().producto}"/>
+
+                            <p:outputLabel value="Cantidad "/>
+                            <p:outputLabel value="#{pendienteCTCBean.getdTO().cantidad}"/>
+                        </p:panelGrid>
+
+                        <h:panelGrid style="margin-left: 210px" columns="2">
+                            <p:commandButton process="@this" value="Aceptar" actionListener="#{pendienteCTCBean.entregarpendiente(pendienteCTCBean.getdTO().itemorden)}" 
+                                             update="form:tabla,:form:msj" oncomplete="PF('wlgdatos').hide()"/>
+                            <p:commandButton process="@this" value="Cancelar" oncomplete="PF('wlgdatos').hide()" />
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

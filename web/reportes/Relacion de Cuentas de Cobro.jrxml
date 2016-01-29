@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Relacion de Cuentas de Cobro" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="133" bottomMargin="20" uuid="bd41ee72-8ce7-41b6-890b-1e14a35d6fca">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#73B0E6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#CFDBE6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="relacion" uuid="375b988b-597e-4f06-af66-276a30925c5d">
+		<parameter name="F_ENTREGA" class="java.util.Date"/>
+		<queryString>
+			<![CDATA[SELECT
+     cuentasctc.`numcuenta` AS cuentasctc_numcuenta,
+     cuentasctc.`puntoentrega` AS cuentasctc_puntoentrega,
+     cuentasctc.`facturas` AS cuentasctc_facturas,
+     cuentasctc.`productos` AS cuentasctc_productos,
+     cuentasctc.`inicia` AS cuentasctc_inicia,
+     cuentasctc.`finaliza` AS cuentasctc_finaliza,
+     cuentasctc.`totalcta` AS cuentasctc_totalcta
+FROM
+     `cuentasctc` cuentasctc]]>
+		</queryString>
+		<field name="cuentasctc_numcuenta" class="java.lang.String"/>
+		<field name="cuentasctc_puntoentrega" class="java.lang.String"/>
+		<field name="cuentasctc_facturas" class="java.lang.Integer"/>
+		<field name="cuentasctc_productos" class="java.lang.Integer"/>
+		<field name="cuentasctc_inicia" class="java.lang.String"/>
+		<field name="cuentasctc_finaliza" class="java.lang.String"/>
+		<field name="cuentasctc_totalcta" class="java.lang.Long"/>
+		<variable name="item" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{item}+1]]></variableExpression>
+			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		</variable>
+		<variable name="Totalcuentas" class="java.lang.Long" calculation="Sum">
+			<variableExpression><![CDATA[$F{cuentasctc_totalcta}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="FECHA_ENTREGA" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+now()]]>
+	</queryString>
+	<field name="now()" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="80" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" style="table" x="49" y="0" width="96" height="80" uuid="25e84220-00c5-44ee-9639-cc43461e2708"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="relacion" uuid="5251e96c-8c4d-4696-a741-0e614689ae31">
+						<datasetParameter name="F_ENTREGA">
+							<datasetParameterExpression><![CDATA[$P{FECHA_ENTREGA}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="27" uuid="0314715c-eff8-4bd3-8b45-698da7fd306d">
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="27" height="30" uuid="26d63245-ae2c-4b92-ad72-28eda9a3ef37"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[ITEM]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="27" height="30" uuid="f069128b-c166-4229-a39a-8bf8da65314c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{item}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="145" uuid="b89bc026-f323-4f85-bd88-b6920b17e0a9">
+						<jr:tableHeader height="75" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="145" height="37" uuid="9e42831f-a7e9-4a49-a6d9-4da6608ca255"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA["RELACION DE CUENTAS DE COBRO No. CTC-122015"]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="0" y="37" width="145" height="37" uuid="c5de889a-1363-4ad9-a51a-e6880f005bb4"/>
+								<textElement verticalAlignment="Middle">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA["CLIENTE: MANEXKA EPS-I\nDIRECCION: SAN ANDRES DE SOTAVENTO"]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:tableFooter height="56" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="145" height="56" uuid="4e3f9181-f6c9-4b81-aedc-cad92291113b"/>
+								<text><![CDATA[Autorizado Por:]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="145" height="30" uuid="c0aedaae-2f1e-4555-9bab-172b647a8c6a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[PUNTO DE ENTREGA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="140" height="30" uuid="f716e863-e16e-4bde-afcc-69cd08cba42f"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cuentasctc_puntoentrega}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="92" uuid="b6082b4f-8395-49ec-8cc0-4dc614da01e4">
+						<jr:tableHeader height="75" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="92" height="37" uuid="cdbad2ff-237e-42aa-9a6b-9e65130ee0bb"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle"/>
+								<text><![CDATA[FECHA:]]></text>
+							</staticText>
+							<staticText>
+								<reportElement x="0" y="37" width="92" height="37" uuid="6c941c43-aa4d-44ce-9b86-1d01c7f01efe"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font size="8"/>
+								</textElement>
+								<text><![CDATA[CUENTAS DEL MES DE]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter height="56" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="92" height="56" uuid="f1ef8cd9-96c2-4c85-8ac3-8ef38eef6fb3"/>
+								<text><![CDATA[Recibi Conforme]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="92" height="30" uuid="22e11c0e-3051-449e-9873-ee21533c67ee"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[CUENTA No.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="75" height="30" uuid="bda5bec9-f478-4ce1-95cf-571707ccce49"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cuentasctc_numcuenta}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="79" uuid="6022cbeb-9b75-47d2-8d1e-95c379e04207">
+						<jr:tableHeader height="75" rowSpan="1">
+							<textField pattern="MMMMM dd, yyyy">
+								<reportElement x="2" y="0" width="72" height="37" uuid="e1475777-5dd6-4feb-aa76-3305674e3f2e"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$P{F_ENTREGA}]]></textFieldExpression>
+							</textField>
+							<staticText>
+								<reportElement x="2" y="48" width="77" height="21" uuid="1824b0bc-9efe-4ac2-b1a9-eb0d96bb8f45"/>
+								<textElement verticalAlignment="Middle">
+									<font size="8"/>
+								</textElement>
+								<text><![CDATA[DICIEMBRE DE 2015]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="79" height="30" uuid="eeac532c-4938-48e7-b732-ef68c6d083bb"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[DESDE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="72" height="30" uuid="3a01bdaf-842f-488f-91db-b2c48b5545f7"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cuentasctc_inicia}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="75" uuid="ada36d1e-59da-4808-a50f-5beb4ebcfa61">
+						<jr:tableHeader height="75" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="56" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="73" height="18" uuid="629eb130-509a-4744-9a03-599cb53b06d6"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle"/>
+								<text><![CDATA[GRAN-TOTAL]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="75" height="30" uuid="0f1ac534-0049-4d43-bcae-2884594d82e8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[HASTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="18" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="73" height="18" uuid="eca63b6f-cf1b-4e77-a9eb-dca4df2167f4"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle"/>
+								<text><![CDATA[SUB-TOTAL]]></text>
+							</staticText>
+						</jr:columnFooter>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="71" height="30" uuid="09525b8f-2042-4b57-9147-928778a3bc49"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cuentasctc_finaliza}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="81" uuid="5c6a2129-8bcf-4a34-9b04-11f6a605b2fe">
+						<jr:tableHeader height="75" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="56" rowSpan="1">
+							<textField pattern="$ #,##0">
+								<reportElement x="0" y="0" width="79" height="18" uuid="8cbbde0c-ac26-42eb-868d-876adefd4bce"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Arial"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Totalcuentas}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:columnHeader style="table_TH" height="30" rowSpan="1"/>
+						<jr:columnFooter style="table_TD" height="18" rowSpan="1">
+							<textField pattern="$ #,##0">
+								<reportElement x="0" y="0" width="79" height="18" uuid="01c0ebec-1792-496d-9a92-99564caf95a5"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Comic Sans MS"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Totalcuentas}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
+							<textField pattern="$ #,##0">
+								<reportElement x="0" y="0" width="79" height="30" uuid="a583510a-f7ca-4e72-adbc-66c08111cb4a"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Courier New"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cuentasctc_totalcta}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</summary>
+</jasperReport>

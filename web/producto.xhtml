@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+
+            <ui:define name="top">
+                <h2 align="center">PRODUCTOS</h2>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form id="frmproducto">
+                    <p:growl id="msj" autoUpdate="false" showDetail ="true" />
+                    <h:panelGrid style="margin-left: 10px" columns="2" id="pnlproducto">
+                        <h:outputLabel value="ID. PRODUCTO"/>
+                        <p:inputText id="txtidproducto" value="#{productoBean.producto.itemproducto}" 
+                                     style="text-align: right" size="5"/>
+                        <h:outputLabel value="DESCRIPCIÓN"/>
+                        <p:inputText id="txtdescripcion" value="#{productoBean.producto.descripcion}" size="90" />
+                        <h:outputLabel value="CUM"/>
+                        <p:inputText id="txtcum" value="#{productoBean.producto.cumproducto}"/>
+                        <h:outputLabel value="PRECIO DE VENTA"/>
+                        <p:inputText id="txtprecioventa" value="#{productoBean.producto.precioventa}" 
+                                     style="text-align: right" size="10"  >
+                            <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0"  />
+                        </p:inputText>
+                        <h:outputLabel value="COSTO"/>
+                        <p:inputText id="txtcosto" value="#{productoBean.producto.costo}"
+                                     style="text-align: right" size="10">
+                            <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                        </p:inputText>
+                    </h:panelGrid> 
+
+                    <p:commandButton process="@this,pnlproducto,frmlistpro:tablaproducto" value="Actualizar Producto" actionListener="#{productoBean.updateproducto(event)}"
+                                     update="frmlistpro:tablaproducto,pnlproducto,msj" />
+                </h:form>
+
+                <h:form id="frmlistpro">
+                    <p:dataTable value="#{productoBean.listarproductos}" var="producto" widgetVar="dataproducto"
+                                 scrollable="true" scrollHeight="350" id="tablaproducto"
+                                 paginator="true" rows="20" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="10,20,30,50" emptyMessage="No se Encontro Producto..." 
+                                 filteredValue="#{productoBean.filtrarproductos}" >
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar Por:" />
+                                <p:inputText  id="globalFilter" onkeyup="PF('dataproducto').filter()"
+                                              size="50" placeholder="cum o descripción"/>
+                            </p:outputPanel>
+                        </f:facet>
+                        <p:column headerText="Id" width="40" style="text-align: right">
+                            <h:outputLabel value="#{producto.itemproducto}"/>
+                        </p:column>
+
+                        <p:column filterBy="#{producto.cumproducto}" headerText="CUM" width="80">
+                            <h:outputLabel value="#{producto.cumproducto}"/>
+                        </p:column>
+
+                        <p:column filterBy="#{producto.descripcion}" headerText="DESCRIPCIÓN">
+                            <h:outputLabel value="#{producto.descripcion}"/>
+                        </p:column>
+
+                        <p:column headerText="PRECIO DE VENTA" width="80" style="text-align: right">
+                            <h:outputLabel value="#{producto.precioventa}">
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="COSTO" width="70" style="text-align: right">
+                            <h:outputLabel value="#{producto.costo}" >
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column width="60" style="text-align: right">
+                            <p:commandButton process="@this,frmproducto:pnlproducto" icon="ui-icon-check"
+                                             actionListener="#{productoBean.findproducto(event, producto.itemproducto)}"
+                                             update="frmproducto:pnlproducto"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

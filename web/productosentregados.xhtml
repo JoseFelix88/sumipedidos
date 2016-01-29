@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"    
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+
+            <ui:define name="top">
+                <h2 align="center" style="font-size: 20px">PRODUCTOS ENTREGADOS</h2>
+            </ui:define>
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:growl id="msgs" showDetail="true"/>
+
+                    <p:dataTable id="productoentregado" value="#{productoBean.listaProductoentregado}" var="ProductoEntregado" 
+                                 editable="true" editMode="cell" widgetVar="wgproductoentregado"
+                                 scrollable="true" scrollHeight="350"  style="font-family: verdana; font-size: 12px" 
+                                 paginator="true" rows="20" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="10,20,30,50" emptyMessage="No se Encontraron Productos..." 
+                                 filteredValue="#{productoBean.filtrolistaproductoentregado}">
+
+                        <p:ajax event="cellEdit"
+                                listener="#{productoBean.onCellEdit(event,
+                                            ProductoEntregado[1], 
+                                            ProductoEntregado[3])}" 
+                                update=":form:msgs" />
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar Por:" />
+                                <p:inputText  id="globalFilter" onkeyup="PF('wgproductoentregado').filter()"
+                                              size="50" placeholder="cum o descripción"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column filterBy="#{ProductoEntregado[1]}" headerText="CUM" width="100">
+                            <h:outputLabel value="#{ProductoEntregado[1]}"/>
+                        </p:column>
+
+                        <p:column filterBy="#{ProductoEntregado[2]}" headerText="PRODUCTO" width="200">
+                            <h:outputLabel value="#{ProductoEntregado[2]}"/>
+                        </p:column>
+
+                        <p:column headerText="CANTIDAD ENTREGADA" style="text-align: right">
+                            <p:outputLabel value="#{ProductoEntregado[5]}" >
+                                <f:convertNumber type="currency" currencySymbol="" maxFractionDigits="0" />
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="COSTO" style="text-align: right">
+                            <p:outputLabel value="#{ProductoEntregado[4]}" >
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </p:outputLabel>
+                        </p:column>
+                        
+                        <p:column headerText="COSTO TOTAL" style="text-align: right">
+                            <p:outputLabel value="#{ProductoEntregado[7]}" >
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </p:outputLabel>
+                        </p:column>
+                        <!--<f:facet name="footer">
+                            <p:summaryRow>
+                                <p:column colspan="5" style="text-align:right">
+                                    <h:outputText value="Total:" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="12366">
+
+                                    </h:outputText>
+                                </p:column>
+                            </p:summaryRow> 
+
+                        </f:facet>-->
+                        
+                        <p:column headerText="PRECIO DE VENTA X UND" style="text-align: right" width="70">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{ProductoEntregado[3]}">
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText id="id" value="#{ProductoEntregado[3]}" style="width:96%" >
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="TOTAL FACTURADO" style="text-align: right">
+                            <p:outputLabel value="#{ProductoEntregado[6]}" >
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </p:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

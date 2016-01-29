@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura ctc" pageWidth="612" pageHeight="792" columnWidth="500" leftMargin="56" rightMargin="56" topMargin="70" bottomMargin="85" uuid="f47fcaf3-2b99-46ec-82ef-0e1fccca8bc0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="punto" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="firma" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[SELECT ordenes.numorden,
+CONCAT(puntos.PREFIJO,'-',
+ordenes.numfactura) AS numfactura,
+empresas.nombre as razonsocial,
+empresas.eslogan,
+empresas.Nit AS nitempresa,
+empresas.Telefono,
+empresas.Direccion,
+CONCAT(ciudades.nombre,'-',
+departamentos.nombre ) AS Municipiodepartamento,
+'15-12-2015' AS fechafactura,
+clientes.nit AS nitcliente,
+clientes.nombre AS cliente,
+puntos.NOMBRE AS puntoentrega,
+afiliados.TIPODOC,
+afiliados.DOCUMENTO,
+CONCAT(afiliados.APE1,' ',
+afiliados.APE2,' ',
+afiliados.NOM1,' ',
+afiliados.NOM2) AS afiliado,
+productosbase.cum,
+productosbase.descripcion,
+ordenes.cantidad,
+productosbase.precio,ordenes.cantidad*
+productosbase.precio AS totalfactura,
+puntos.resoluciondian,
+puntos.fecharesolucion,
+puntos.iniciafactura,
+puntos.finalizafactura
+FROM
+clientes ,
+empresas ,
+ordenes ,
+productosbase ,
+puntos ,
+ciudades ,
+departamentos ,
+afiliados
+WHERE
+ordenes.puntoentrega = puntos.NOMBRE AND
+clientes.estado = 1 AND
+empresas.estado = 1 AND
+ordenes.estado = 1 AND
+ordenes.cumproducto = productosbase.cum AND
+empresas.Ciudad = ciudades.cod_ciudad AND
+ciudades.dept = departamentos.cod_dept AND
+ordenes.tipodoc = afiliados.TIPODOC AND
+ordenes.idafiliado = afiliados.DOCUMENTO AND
+puntos.NOMBRE = $P{punto}
+
+ORDER BY CONCAT(puntos.PREFIJO,'-',
+ordenes.numfactura)]]>
+	</queryString>
+	<field name="numorden" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="numfactura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="razonsocial" class="java.lang.String"/>
+	<field name="eslogan" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nitempresa" class="java.lang.String"/>
+	<field name="Telefono" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Direccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Municipiodepartamento" class="java.lang.String"/>
+	<field name="fechafactura" class="java.lang.String"/>
+	<field name="nitcliente" class="java.lang.String"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="puntoentrega" class="java.lang.String"/>
+	<field name="TIPODOC" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DOCUMENTO" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="afiliado" class="java.lang.String"/>
+	<field name="cum" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descripcion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cantidad" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="precio" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="totalfactura" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="resoluciondian" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="fecharesolucion" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="iniciafactura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="finalizafactura" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="totalfactura" class="java.lang.Long" resetType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$F{totalfactura}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="150" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="500" height="150" uuid="0ccb1757-c993-4a55-95e1-45d3d13871a7"/>
+				<textField>
+					<reportElement x="0" y="58" width="207" height="14" uuid="f8771238-de3b-4b99-8b77-8ae009f522a3"/>
+					<textElement>
+						<font fontName="Verdana" size="10" isBold="false" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Factura de Venta No. "+$F{numfactura}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="104" width="142" height="14" uuid="d68071c4-6c62-43c1-9bc6-3fe065e4a94b"/>
+					<textElement>
+						<font fontName="Verdana"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Telefono: "+$F{Telefono}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="119" width="221" height="24" uuid="d4358742-b32f-4b47-9ed9-98a26d779ad0"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Direccion: "+$F{Direccion}+"\n"+$F{Municipiodepartamento}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="73" y="72" width="107" height="13" uuid="895a94b2-dee1-409d-b98e-17ed72ddb51f"/>
+					<textElement>
+						<font fontName="Verdana"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechafactura}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="72" width="73" height="13" uuid="8a369c94-da64-4f57-b4ce-22677d7687fc"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<text><![CDATA[Fecha Factura:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="233" y="59" width="156" height="45" uuid="78c2d108-e2b8-4d69-99c0-9b38151b0a9a"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Entidad Administradora: \n"+$F{cliente}+"\nNit: "+$F{nitcliente}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="390" y="59" width="110" height="45" uuid="88368f5d-03f1-4664-a6e7-d7d11ce39fb5"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Punto de Entrega\n"+$F{puntoentrega}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="247" y="107" width="253" height="13" uuid="4046a3b2-de09-4220-9ca0-5ba979c81034"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Tipo de Documento: "+$F{TIPODOC}+" - Numero: "+$F{DOCUMENTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="247" y="124" width="253" height="19" uuid="8fceacbe-0feb-4181-bf30-b199b4e51894"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Afiliado: "+$F{afiliado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="73" y="0" width="213" height="58" uuid="71eb66e5-270a-4b9e-af32-bfc0e6666880"/>
+					<textElement textAlignment="Center">
+						<font fontName="Broadway" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{razonsocial}+"\n"+$F{eslogan}+"\nNIT. "+$F{nitempresa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="288" y="39" width="210" height="19" uuid="8da729de-c156-41dc-b3b7-cbb40bb969e0"/>
+					<textElement markup="none">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ESTA FACTURA SE ASIMILA EN SUS \nEFECTOS A UNA LETRA DE CAMBIO (Art. 774 C.C)"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="3" y="88" width="204" height="17" uuid="c72de6d7-aba0-4f4c-8d58-7f13faf08e70"/>
+					<textElement>
+						<font fontName="Verdana"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Autorizacion No. "+$F{numorden}]]></textFieldExpression>
+				</textField>
+				<image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
+					<reportElement x="3" y="0" width="70" height="60" uuid="52dc97ed-5073-429c-a2e6-c96a3d82a930"/>
+					<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+				</image>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="40" y="0" width="48" height="20" uuid="9ae40efe-4a43-4bdc-ad96-c052faffe7cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CUM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="0" width="100" height="20" uuid="c214539b-5d0a-466a-bde5-6ff3c77da0c1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="316" y="0" width="52" height="20" uuid="f6adae7b-aa8b-40c5-b2f7-4f4146de1174"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="57" height="20" uuid="349ac244-bf26-4cf5-93f5-0c26642f1cb8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Valor Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="428" y="0" width="70" height="20" uuid="f3d05c97-adc7-4380-bbc9-9a3c330f6a18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Valor Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="63" splitType="Stretch">
+			<break>
+				<reportElement x="0" y="62" width="100" height="1" uuid="67d132e5-67e6-470e-93fa-c73b1fd91fac"/>
+			</break>
+			<textField>
+				<reportElement x="3" y="0" width="85" height="20" uuid="0c07c8d5-bf28-49c5-82d5-0c1e130a46a7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Verdana"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="88" y="0" width="228" height="40" uuid="9c168808-8ce2-4a0f-b771-8726002ddf1c"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Verdana" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="316" y="0" width="41" height="20" uuid="25c6f4a6-3f1e-43c8-a5b1-539d3b5c6356"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="370" y="0" width="57" height="20" uuid="abbef645-ff96-4890-a789-8cfb1e4a228c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0">
+				<reportElement x="428" y="0" width="70" height="20" uuid="25a83777-53e3-478c-be25-ace44617a86e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Verdana" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalfactura}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="368" y="26" width="68" height="14" uuid="4deb2ff2-afaa-498e-9b94-df696775d139"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Factura =]]></text>
+			</staticText>
+			<line>
+				<reportElement x="436" y="25" width="62" height="1" uuid="2e61deb1-8de8-4f5a-ad1f-7d0b7f808f15"/>
+			</line>
+			<textField pattern="$ #,##0">
+				<reportElement x="436" y="26" width="62" height="14" uuid="b5f823b6-bf24-473e-a82e-856b16cce106"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalfactura}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="67">
+			<rectangle>
+				<reportElement x="3" y="0" width="489" height="42" uuid="ab048efd-aa10-4f43-a4b0-0b61b9ba416c"/>
+			</rectangle>
+			<line>
+				<reportElement x="401" y="0" width="1" height="42" uuid="3375a763-c868-4440-86d2-4f43c0ccd681"/>
+			</line>
+			<staticText>
+				<reportElement x="7" y="2" width="70" height="14" uuid="1f75c65d-8849-438e-b8ee-107bc0ef6ddf"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="428" y="25" width="50" height="14" uuid="a0dc9a84-8338-401c-979f-a9fecba3a212"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[ACEPTADA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="100" y="0" width="1" height="42" uuid="6dbaf380-3d2f-434f-8edf-8c5cc73d4c5b"/>
+			</line>
+			<image hAlign="Center" isUsingCache="true" onErrorType="Blank">
+				<reportElement x="106" y="0" width="296" height="39" uuid="06bcc6d5-a562-489d-9255-c30a2d676d96"/>
+				<imageExpression><![CDATA[$P{firma}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="3" y="42" width="204" height="25" uuid="c3ec1b56-c49e-443d-a513-ba9c8bd31714"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Factura por Computador \nsegún resolución DIAN No. "+$F{resoluciondian}+" de: "]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="207" y="42" width="79" height="25" uuid="80236b7e-c999-43e8-917d-2ac6fe225cf7"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecharesolucion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="286" y="42" width="206" height="25" uuid="356e52b7-6c52-4092-856f-269f24fffff7"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Autoriza del No. "+$F{iniciafactura}+" al No. "+$F{finalizafactura}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="140"/>
+	</pageFooter>
+</jasperReport>

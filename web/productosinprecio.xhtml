@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./Template.xhtml">
+
+            <ui:define name="top">
+                <h2 align="center" style="font-size: 20px">PRODUCTOS SIN PRECIO DE VENTA</h2>
+            </ui:define>
+            <ui:define name="content">
+                <h:form id="form">
+                    <p:growl id="msgs" showDetail="true"/>
+
+                    <p:dataTable id="tablasiprecio" value="#{productoBean.listarproductosSinPrecio}" var="SinPrecio" 
+                                 editable="true" editMode="cell" widgetVar="wgtprecio"
+                                 scrollable="true" scrollHeight="350"  
+                                 paginator="true" rows="20" paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 rowsPerPageTemplate="10,20,30,50" emptyMessage="No se Encontraron Productos SIN Precio de Venta..." 
+                                 filteredValue="#{productoBean.listarproductosSinPrecioFiltro}">
+
+                        <p:ajax event="cellEdit" listener="#{productoBean.onCellEdit(event, SinPrecio.cumproducto, SinPrecio.precioventa)}" 
+                                update=":form:msgs" />
+
+                        <f:facet name="header">
+                            <p:outputPanel>
+                                <h:outputText value="Buscar Por:" />
+                                <p:inputText  id="globalFilter" onkeyup="PF('wgtprecio').filter()"
+                                              size="50" placeholder="cum o descripción"/>
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column headerText="CUM">
+                            <h:outputLabel value="#{SinPrecio.cumproducto}"/>
+                        </p:column>
+
+                        <p:column filterBy="#{SinPrecio.descripcion}" headerText="PRODUCTO" width="475">
+                            <h:outputLabel value="#{SinPrecio.descripcion}"/>
+                        </p:column>
+
+                        <p:column headerText="PRECIO DE VENTA" style="text-align: right" width="70">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{SinPrecio.precioventa}">
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText id="id" value="#{SinPrecio.precioventa}" style="width:96%" >
+                                        <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+
+                        <p:column headerText="COSTO" style="text-align: right">
+                            <p:outputLabel value="#{SinPrecio.costo}" >
+                                <f:convertNumber type="currency" currencySymbol="$ " maxFractionDigits="0" />
+                            </p:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
